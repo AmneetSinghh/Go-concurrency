@@ -1,0 +1,76 @@
+Important points:
+
+* In short, Go's goroutines + channels = CSP in action! 😊
+
+
+
+* GO goroutines |   Other programming languges threads
+
+- For modeling concurrent problems, it’s common for languages to end their chain of abstraction at the level of the OS thread and memory access synchroni‐ zation. Go takes a different route and supplants this with the concept of goroutines and channels. In go scheduling of goroutines handled by go scheduler.
+
+- All other programming langugaues, use OS threads, example java maps java threadds to os threads, and scheduling of threads, and all low level details handled by os threads. so there is a abstraction and dependency.
+
+
+
+* example of web server using other programming language threads , which use threads as os-threads high level abstraction:
+• Does my language naturally support threads, or will I have to pick a library?
+• Where should my thread confinement boundaries be?
+• How heavy are threads in this operating system?
+• How do the operating systems my program will be running in handle threads differently?
+• I should create a pool of workers to constrain the number of threads I create. How do I find the optimal number?
+
+solution : You’ve immediately been yanked down into the tech‐ nicalities of how you’re going to solve the problem of parallelism, so in go you can sapwn any number of goroutines, so problem solved. 
+
+
+
+* java vs go concurrency :
+
+Aspect	                                     Java(OS Threads)	        |     Go (Goroutines and Multiplexing)
+Threads:	            Java threads map 1:1 to OS threads.	            |  Goroutines are lightweight, managed by the Go runtime.
+Memory Usage:	        Each Java thread uses a significant amount of memory (e.g., 1MB by default).	 |  Goroutines use very little memory (a few KB each).
+Scheduling:	            Relies on OS for thread scheduling.              |   	Go runtime has its own scheduler to multiplex goroutines.
+Concurrency Model:	    Thread-based, directly tied to OS capabilities.	 | Message-passing concurrency inspired by CSP.
+Scaling:	            Limited by OS thread count and resources.        | 	Can handle millions of goroutines efficiently.
+
+
+
+* channels vs mutex : 
+
+• Go's philosophy "Do not communicate by sharing memory. Instead, share memory by communicating" encourages designing systems where goroutines manage their own data, and   interactions happen through channels.
+
+    • Use channels by default because they align with Go’s design philosophy.
+    • Only switch to mutexes if profiling shows a bottleneck, and restructuring doesn’t resolve it.
+
+Channels internals : 
+    • there is also a waiting process implemented in channels. So channels is a high level abstraction , may be mutex can be used for channels implementation. So channels are generally slower than mutex. lets do benchmarking, Please check channels vs mutex example code. Channels is slower because of message passing. not that much slower, but yes slower than mutex.
+
+
+
+* Steps for go philosophy:
+
+• Are you trying to transfer ownership of data - channels
+
+• Are you trying to guard internal state of a struct? - mutex
+
+type Counter struct { mu sync.Mutex
+value int }
+func (c *Counter) Increment() { c.mu.Lock()
+defer c.mu.Unlock()
+c.value++ }
+
+With above example we hide, implementation details , so no need to return channels. As in critical section we can use mutex 
+
+• Are you trying to coordinate multiple pieces of logic? - channels
+
+• Is it a performance-critical section? - mutex
+
+- This is because channels use memory access synchronization to operate, therefore they can only be slower. 
+
+
+
+Final advice : 
+* Go’s philosophy on concurrency can be summed up like this: aim for simplicity, use channels when possible, and treat goroutines like a free resource.
+* Use goroutines liberally to represent concurrent tasks and focus on designing clean workflows, as hardware limits on goroutines are rarely an issue.
+
+
+

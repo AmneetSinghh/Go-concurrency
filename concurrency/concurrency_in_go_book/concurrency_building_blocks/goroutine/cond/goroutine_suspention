@@ -1,0 +1,36 @@
+When we say a goroutine is suspended, it means the goroutine is temporarily paused or put on hold by the Go runtime scheduler. 
+It does not actively execute on a CPU core until the scheduler resumes it. Suspension is a natural part of how the Go runtime 
+manages concurrency and ensures fairness between goroutines.
+
+
+
+goroutine suspends -> not take cpu core -> give other goroutine time to run -> fairness :)
+
+
+when it suspends ?
+
+
+1 : 
+
+ch := make(chan int)
+go func() {
+    <-ch // Goroutine is suspended here until data is sent into the channel
+}()
+
+
+2 :  
+time.Sleep(1 * time.Second) // Suspended during sleep
+
+3 :
+
+func main() {
+    mu.Lock() // First goroutine acquires the lock
+    go func() {
+        mu.Lock() // This goroutine gets suspended here
+        fmt.Println("Second goroutine acquired lock")
+    }()
+    time.Sleep(2 * time.Second)
+    mu.Unlock() // First goroutine releases the lock
+}
+
+

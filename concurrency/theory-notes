@@ -1,0 +1,38 @@
+- focus on logic correctness, adding sleeps into your code is used for debugging purpose in concurrenct programs
+- make concurrency book notes on ipad ( today/tomorrow)
+- why i++ is not atomic
+    - i++ converts into 3 operations, each operation is atomic in CPU, but i++ not atomic in application level because proper all 3 functions combined not atomic.
+    - so atomicity may differ based on the context you are in. Something may be atomic in 1 context, but not in other.
+- if something is atomic, then its safe under concurrenct programs. No goroutine will impact.
+
+
+
+
+Concurrency safety : 
+
+// CalculatePi calculates digits of Pi between the begin and end
+// place.
+//
+// Internally, CalculatePi will create FLOOR((end-begin)/2) concurrent
+// processes which recursively call CalculatePi. Synchronization of
+// writes to pi are handled internally by the Pi struct.
+
+func CalculatePi(begin, end int64, pi *Pi) <-chan unit
+
+We now understand that we can call the function plainly and not worry about con‐
+currency or synchronization. Importantly, the comment covers these aspects:
+• Who is responsible for the concurrency?
+• How is the problem space mapped onto concurrency primitives?
+• Who is responsible for the synchronization?
+
+sol : we are only getting channel as response, and Pi struct is handling concurrency. so everything sync access to PI , internally handled.
+
+
+
+simplicity:
+
+
+- Go’s runtime also automatically handles multiplexing concurrent operations onto operating system threads. 
+
+- check your concurrency repository, and write every logic in go as well.
+    - you can see difference in go and java concurrency handling.

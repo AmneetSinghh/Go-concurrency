@@ -1,0 +1,20 @@
+
+
+
+func main(){
+    hello := func(wg *sync.WaitGroup, id int) {
+        wg.Add(1) // This is inside the closure
+        defer wg.Done()
+        fmt.Printf("Hello from %v!\n", id)
+    }
+    go hello()
+    wg.wait() // as wait is 0, so it line executes before wg.Add(1)
+}
+
+
+NOTE:
+
+* The passage warns against placing wg.Add(1) inside a closure (like the hello function). Since goroutines don’t 
+  run immediately, this can introduce a race condition where Wait() might execute before Add(1). 
+
+*

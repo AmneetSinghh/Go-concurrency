@@ -1,0 +1,21 @@
+At a high level, a the pool pattern is a way to create and make available a fixed num‐ ber, or pool, 
+of things for use. It’s commonly used to constrain the creation of things that are expensive 
+(e.g., database connections) so that only a fixed number of them are ever created, but an indeterminate number of operations can 
+still request access to these things. In the case of Go’s sync.Pool, this data type can be safely used by multi‐ ple goroutines
+
+
+
+
+serviceA -> serviceB connections:
+
+serviceA -> database/redis connections
+
+We need a pool of fixed size, so that we can reuse connections. When making a conneciton is expensive.
+
+
+Zomato:
+
+kuma mesh service is the gateway: ( good example of connection pool)
+
+it has all serviceA - serviceB connection pooling + rate limiting.
+
